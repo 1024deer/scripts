@@ -7,7 +7,7 @@ const  defalutValue={
     'PH': [0,42],
     'SG': [0,42],
     'TH': [0,42],
-    'VN': [0,45]
+    'VN': [0,42]
 };
 var flashsellIsRuning = localStorage.getItem('flashsellIsRuning') || "false";
 var productTypeIsSku = localStorage.getItem('productTypeIsSku') || "true";
