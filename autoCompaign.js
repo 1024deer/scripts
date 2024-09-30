@@ -1,3 +1,4 @@
+    'use strict';
     let cur_country_code = ""
     // Your code here...
     let completeFlag = false;
@@ -132,6 +133,7 @@
     // 添加按钮点击事件（可选）
     document.getElementById('startBtn').addEventListener('click', function () {
         console.log('开始按钮被点击');
+        abortFlag = false;
         main();
     });
     // 添加按钮点击事件（可选）
@@ -202,6 +204,7 @@
             }
             if (count > 60) {
                 alert(`${name}超时未找到`);
+                abortFlag = true;
                 break;
             }
             if (abortFlag) {
@@ -221,6 +224,7 @@
             await executeWithRetry("等待页面加载完毕", async function () {
                 let flag = 1;
                 let links = document.querySelectorAll(".theme-arco-link") || [];
+
                 if (links.length != 0) {
                     let index = -1;
                     const obj = [
@@ -229,6 +233,7 @@
                     links.forEach((linkNode) => {
                         const title = linkNode.innerText;
                         if (title == "" || title.includes("查看全部")) return false;
+                        
                         if (title.includes("GMT")) {
                             obj.push({
                                 compaignName: title,
@@ -237,6 +242,12 @@
                             });
                             index++;
                         } else {
+                            const str1 = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIj4KICA8cGF0aCBma"
+
+                            const svgEL = linkNode.querySelector("img");
+                            if (!svgEL || !svgEL.src.startsWith(str1)) {
+                                return;
+                            }
                             obj[index].children.push({
                                 compaignName: title,
                                 children: [],
@@ -258,7 +269,7 @@
                             // process(cur_country_code);
                         } else {
                             let next_country_code = findFirstNonOneCountry(storedCtObject);
-                            window.location.href = `https://seller.tiktokglobalshop.com/promotion/campaign-tools/all?shop_region=${next_country_code}`
+                            window.location.href = `https://seller.tiktokglobalshop.com/promotion/campaign-tools/all?page_index=1&page_size=20&shop_region=${next_country_code}`
                         }
                     }
                     // 遍历obj
@@ -321,8 +332,8 @@
                     alert("全部完成");
                 }
                 let next_country_code = findFirstNonOneCountry(storedCtObject);
-                window.location.href = `https://seller.tiktokglobalshop.com/promotion/campaign-tools/all?shop_region=${next_country_code}`
-                // window.location.href = "https://seller.tiktokglobalshop.com/promotion/campaign-tools/all";
+                window.location.href = `https://seller.tiktokglobalshop.com/promotion/campaign-tools/all?page_index=1&page_size=20&shop_region=${next_country_code}`
+                // window.location.href = "https://seller.tiktokglobalshop.com/promotion/campaign-tools/all?page_index=1&page_size=20";
             }
             await executeWithRetry("等待页面跳转", async function () {
                 const curUrl = window.location.href;
@@ -353,21 +364,28 @@
                 compaignInfo.add(compaignTitle);
                 localStorage.setItem('compaignInfo' + matchCountry(), JSON.stringify(Array.from(compaignInfo)));
                 return;
-            } else {
-                window.location.href = "https://seller.tiktokglobalshop.com/promotion/campaign-tools/all";
             }
         }
         const curDiscountRate = document.getElementById('discountRate');
         curDiscountRate.textContent = sameAsflashsellFlag == "true" ? storedCtObject[matchCountry()][1] : storedCtObject[matchCountry()][1] + 1;
         await executeWithRetry("点击同意", async function () {
-            let tempBtn = document.querySelectorAll(".theme-arco-btn-shape-square")[1];
+            let DivEL = document.querySelector("#campaign-detail-basic-info");
+            if (!DivEL)return false;
+            let tempBtn = DivEL.querySelectorAll(".theme-arco-btn-shape-square")[0];
+            if(tempBtn.classList.contains('theme-arco-btn-loading'))return false;
+            if (tempBtn.innerText.includes("下载失败报告")||tempBtn.innerText.includes("报名中")||tempBtn.innerText.includes("不可参与")){
+                compaignInfo.add(compaignTitle);
+                localStorage.setItem('compaignInfo' + matchCountry(), JSON.stringify(Array.from(compaignInfo)));
+                window.location.href = "https://seller.tiktokglobalshop.com/promotion/campaign-tools/all?page_index=1&page_size=20";
+                return true;
+            }
             if (tempBtn) {
                 tempBtn.click();
                 return true; // 假设条件始终为真
             }
             return false;
         });
-        await sleep(1000);
+        await sleep(2000);
         checkAbort();
         let tempBtn = Array.from(document.getElementsByTagName('button')).find(button =>
             button.textContent.trim() === '同意'
@@ -398,7 +416,7 @@
             }
             return false;
         });
-        await sleep(1000);
+        await sleep(2000);
         checkAbort();
 
 
@@ -481,14 +499,14 @@
         checkAbort();
         await executeWithRetry("查找报名中，验证是否完成", async function () {
             let tempBtn = Array.from(document.getElementsByTagName('button')).find(button =>
-                button.textContent.trim() === '报名中'
+                button.textContent.trim().includes("报名中")
             );
             if (tempBtn) {
                 compaignInfo.add(compaignId);
                 compaignInfo.add(compaignTitle);
                 localStorage.setItem('compaignInfo' + matchCountry(), JSON.stringify(Array.from(compaignInfo)));
                 if (autoCompeignFlag == "true") {
-                    window.location.href = "https://seller.tiktokglobalshop.com/promotion/campaign-tools/all";
+                    window.location.href = "https://seller.tiktokglobalshop.com/promotion/campaign-tools/all?page_index=1&page_size=20";
                 }
                 return true; // 假设条件始终为真
             }
@@ -524,7 +542,7 @@
                 // process(cur_country_code);
             } else {
                 let next_country_code = findFirstNonOneCountry(storedCtObject);
-                window.location.href = `https://seller.tiktokglobalshop.com/promotion/campaign-tools/all?shop_region=${next_country_code}`
+                window.location.href = `https://seller.tiktokglobalshop.com/promotion/campaign-tools/all?page_index=1&page_size=20&shop_region=${next_country_code}`
             }
         }
     }
