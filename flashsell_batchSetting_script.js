@@ -13,7 +13,7 @@ var flashsellIsRuning = localStorage.getItem('flashsellIsRuning') || "false";
 var productTypeIsSku = localStorage.getItem('productTypeIsSku') || "true";
 var discountRateObj = null
 let abortFlag =false
-if (localStorage.getItem('countryInfoObject') == null) {
+if (localStorage.getItem('countryInfoObject') == null||localStorage.getItem('countryInfoObject')=="null") {
 storedCtObject = defalutValue
 localStorage.setItem("countryInfoObject", JSON.stringify(storedCtObject));
 } else {
