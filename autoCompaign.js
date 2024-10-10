@@ -1,4 +1,5 @@
     'use strict';
+    'use strict';
     let cur_country_code = ""
     // Your code here...
     let completeFlag = false;
@@ -46,7 +47,7 @@
         padding: 20px;
         box-shadow: -2px 0 8px rgba(0,0,0,0.1);
         font-family: Arial, sans-serif;
-        width: 180px;
+        width: 220px;
         transition: right 0.3s ease;
     ">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
@@ -95,6 +96,14 @@
                 border-radius: 4px;
                 cursor: pointer;
             ">结束</button>
+                        <button id="clearBtn" style="
+                padding: 8px 16px;
+                background-color: #a9a9a9;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+            ">清空</button>
         </div>
     </div>
 `;
@@ -151,6 +160,15 @@
         console.log('结束按钮被点击');
         abortFlag = true;
     });
+    document.getElementById('clearBtn').addEventListener('click', function () {
+        console.log('清空按钮被点击');
+        localStorage.removeItem('compaignInfoMY');
+        localStorage.removeItem('compaignInfoPH');
+        localStorage.removeItem('compaignInfoSG');
+        localStorage.removeItem('compaignInfoTH');
+        localStorage.removeItem('compaignInfoVN');
+    });
+    
     selectOption();
     function changeReactInputValue(inputDom, newText) {
         let lastValue = inputDom.value;
