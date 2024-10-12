@@ -1,0 +1,337 @@
+    'use strict';
+
+    // 创建悬浮框
+    const floatingBox = document.createElement('div');
+    floatingBox.style.cssText = `
+        position: fixed;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 100px;
+        height: 80px;
+        background-color: #f0f0f0;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 10px;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+    `;
+
+    // 创建关闭按钮
+    const closeButton = document.createElement('button');
+    closeButton.textContent = '关闭';
+    closeButton.style.cssText = `
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        background-color: #ff4d4d;
+        color: white;
+        border: none;
+        border-radius: 3px;
+        padding: 2px 5px;
+        cursor: pointer;
+    `;
+    closeButton.onclick = () => {
+        floatingBox.style.display = 'none'
+    };
+
+    // 创建开始按钮
+    const startButton = document.createElement('button');
+    startButton.textContent = '开始';
+    startButton.style.cssText = `
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+        border-radius: 5px;
+        margin-top: 20px;
+    `;
+    startButton.onclick = () => {
+
+        main();
+    };
+
+    // 将按钮添加到悬浮框
+    floatingBox.appendChild(closeButton);
+    floatingBox.appendChild(startButton);
+
+    // 将悬浮框添加到页面
+    document.body.appendChild(floatingBox);
+
+    function setCondition() {
+        const form = document.getElementById('search-form');
+
+        if (form) {
+            // 在表单中查找所有 span 元素
+            const spans = form.getElementsByTagName('span');
+
+            // 遍历所有 span 元素
+            for (let i = 0; i < spans.length; i++) {
+                // 检查 span 的内容是否为 "处理状态"
+                if (spans[i].textContent.trim() === '处理状态') {
+                    // 找到对应的 select 元素（假设它是 span 的下一个兄弟元素）
+                    const select = spans[i].nextElementSibling;
+
+                    if (select && select.tagName.toLowerCase() === 'select') {
+                        // 遍历 select 的所有选项
+                        for (let j = 0; j < select.options.length; j++) {
+                            // 检查选项的文本是否为 "需处理"
+                            if (select.options[j].text.trim() === '需处理') {
+                                // 选中该选项
+                                select.selectedIndex = j;
+
+                                // 触发 change 事件（如果需要）
+                                const event = new Event('change', { bubbles: true });
+                                select.dispatchEvent(event);
+
+                                break; // 找到并选中后退出循环
+                            }
+                        }
+                        break; // 找到对应的 select 后退出外层循环
+                    }
+                }
+            }
+        }
+
+        if (form) {
+            // 在表单中查找所有 span 元素
+            const spans = form.getElementsByTagName('span');
+
+            // 遍历所有 span 元素
+            for (let i = 0; i < spans.length; i++) {
+                // 检查 span 的内容是否为 "处理状态"
+                if (spans[i].textContent.trim() === '问题类型') {
+                    // 找到对应的 select 元素（假设它是 span 的下一个兄弟元素）
+                    const select = spans[i].nextElementSibling;
+                    let spanELements = select.querySelectorAll('span');
+                    for (let j = 0; j < spans.length; j++) {
+                        if (spanELements[j].textContent.trim() === '信息不完整') {
+                            spanELements[j].parentElement.click();
+                            document.body.click();
+                            break;
+                        }
+                    }
+                    break; // 找到对应的 select 后退出外层循环
+                }
+            }
+        }
+        return true;
+    }
+    let abortFlag = false;
+    function conditionConfirm() {
+        const form = document.getElementById('search-form');
+        const searchBtns = form.querySelectorAll(".jsSearchBtn");
+        let searchBtn = null;
+        if (searchBtns.length > 0) {
+            searchBtn = searchBtns[0];
+        }
+        searchBtn.click();
+        console.log("点击搜索按钮");
+
+        return true;
+    }
+    function setData() {
+        const iframe = document.querySelector('iframe[id^="oDialogDiv_iframe_"]')
+        const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+        const form = iframeDocument.querySelector('.pop-window');
+        console.log(form);
+        let countryCode = ""
+        //收件城市
+        if (form) {
+            // 在表单中查找所有 span 元素
+            const spans = form.getElementsByTagName('span');
+
+            // 遍历所有 span 元素
+            for (let i = 0; i < spans.length; i++) {
+                // 检查 span 的内容是否为 "处理状态"
+                if (spans[i].textContent.trim() === '销售帐号') {
+                    // 找到对应的 select 元素（假设它是 span 的下一个兄弟元素）
+                    const countryCodeInput = spans[i].nextElementSibling;
+                    if (countryCodeInput.value != '' && countryCodeInput.value.includes("-")) {
+                        countryCode = countryCodeInput.value.split("-")[1];
+                        console.log(countryCode);
+                    }
+
+                    break; // 找到对应的 select 后退出外层循环
+                }
+            }
+        }
+
+        if (form) {
+            // 在表单中查找所有 span 元素
+            const spans = form.getElementsByTagName('span');
+
+            // 遍历所有 span 元素
+            for (let i = 0; i < spans.length; i++) {
+                // 检查 span 的内容是否为 "处理状态"
+                if (spans[i].textContent.trim() === '国家简码') {
+                    // 找到对应的 select 元素（假设它是 span 的下一个兄弟元素）
+                    const countryCodeInput = spans[i].nextElementSibling;
+                    console.log(countryCodeInput);
+                    changeReactInputValue(countryCodeInput, countryCode);
+
+                    break; // 找到对应的 select 后退出外层循环
+                }
+            }
+        }
+        //收件城市
+        if (form && countryCode == "SG") {
+            // 在表单中查找所有 span 元素
+            const spans = form.getElementsByTagName('span');
+
+            // 遍历所有 span 元素
+            for (let i = 0; i < spans.length; i++) {
+                // 检查 span 的内容是否为 "处理状态"
+                if (spans[i].textContent.trim() === '收件城市') {
+                    // 找到对应的 select 元素（假设它是 span 的下一个兄弟元素）
+                    const cityCodeInput = spans[i].nextElementSibling;
+                    console.log(cityCodeInput);
+                    changeReactInputValue(cityCodeInput, "Singapore");
+                    break; // 找到对应的 select 后退出外层循环
+                }
+            }
+        }
+    }
+
+    function sleep(ms) {
+        console.log("sleep ", ms);
+
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async function executeWithRetry(name, func) {
+        let count = 0;
+        do {
+            // 调用传入的函数并获取返回值
+            const result = await func();
+            // 如果返回值为真，则继续执行下一步操作
+            if (result == true) {
+                break; // 退出循环
+            } else {
+                console.log(`${name}未找到`);
+                // 如果返回值为假，则等待一段时间后再次执行函数
+                count++;
+                await sleep(500);
+            }
+            if (count > 60) {
+                alert(`${name}超时未找到`);
+                abortFlag = true;
+                break;
+            }
+            if (abortFlag) {
+                break;
+            }
+        } while (true);
+    }
+
+
+
+
+    async function main() {
+        await sleep(1000);
+        setCondition();
+        await sleep(500);
+        conditionConfirm()
+        await sleep(2500);
+        const pagingInput = document.querySelector(".of-paging_size")
+        changeReactInputValue(pagingInput, 100)
+        simulateEnterKeyPress(pagingInput)
+        await sleep(500);
+        const pagingBody = document.querySelector(".of-paging_body");
+        let PageNum = pagingBody.children.length;
+        if (pagingBody.children.length == 0) return;
+        let targetTr = pagingBody.children[0];
+        console.log("1");
+
+        if (targetTr) {
+            // 创建并分发 mouseenter 事件
+            const mouseenterEvent = new MouseEvent('mouseenter', {
+                'view': window,
+                'bubbles': true,
+                'cancelable': true
+            });
+            targetTr.dispatchEvent(mouseenterEvent);
+
+            // 创建并分发 mouseover 事件
+            const mouseoverEvent = new MouseEvent('mouseover', {
+                'view': window,
+                'bubbles': true,
+                'cancelable': true
+            });
+            targetTr.dispatchEvent(mouseoverEvent);
+        }
+        await executeWithRetry("查找报名中，验证是否完成", async function () {
+            let tempBtn = document.querySelector('input[value="详情(ctrl+单击)"]');
+            if (tempBtn) {
+                tempBtn.click();
+                return true; // 假设条件始终为真
+            }
+            return false;
+        });
+        await sleep(1000);
+        setData();
+        await sleep(2000);
+        let divEL = document.querySelector(".operating");
+        if (divEL) {
+            const btn = divEL.querySelector(".jsSaveBtn");
+            btn.click();
+        }
+        for (let i = 1; i < PageNum; i++) {
+            await sleep(1000);
+            pagingInput.value = i * 100;
+            simulateEnterKeyPress(pagingInput)
+            await sleep(1000);
+            setData();
+            await sleep(2000);
+            divEL = document.querySelector(".operating");
+            if (divEL) {
+                const btn = divEL.querySelector(".jsSaveBtn");
+                btn.click();
+            }
+            await sleep(2000);
+            divEL = document.querySelector(".operating");
+            if (divEL&&i) {
+                const btn = divEL.querySelector(".jsNextBtn");
+                btn.click();
+            }
+        }
+        if (divEL) {
+            const btn = divEL.querySelector(".jsSaveBtn").nextElementSibling;
+            btn.click();
+        }
+        console.log("完成");
+    }
+
+
+    function simulateEnterKeyPress(inputElement) {
+        const event = new KeyboardEvent('keydown', {
+            key: 'Enter',
+            code: 'Enter',
+            which: 13,
+            keyCode: 13,
+            bubbles: true
+        });
+        inputElement.dispatchEvent(event);
+    }
+
+    function changeReactInputValue(inputDom, newText) {
+        let lastValue = inputDom.value;
+        inputDom.value = newText;
+        let event = new Event('input', { bubbles: true });
+        event.simulated = true;
+        let tracker = inputDom._valueTracker;
+        if (tracker) {
+            tracker.setValue(lastValue);
+        }
+        inputDom.dispatchEvent(event);
+
+    }
