@@ -1,3 +1,4 @@
+
     'use strict';
     'use strict';
     let cur_country_code = ""
@@ -168,7 +169,7 @@
         localStorage.removeItem('compaignInfoTH');
         localStorage.removeItem('compaignInfoVN');
     });
-    
+
     selectOption();
     function changeReactInputValue(inputDom, newText) {
         let lastValue = inputDom.value;
@@ -251,7 +252,7 @@
                     links.forEach((linkNode) => {
                         const title = linkNode.innerText;
                         if (title == "" || title.includes("查看全部")) return false;
-                        
+
                         if (title.includes("GMT")) {
                             obj.push({
                                 compaignName: title,
@@ -260,8 +261,7 @@
                             });
                             index++;
                         } else {
-                            const str1 = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIj4KICA8cGF0aCBma"
-
+                            const str1 = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIj4KICA8cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGNsaXAtcnVsZT0iZXZlbm9kZCIgZD0iTTYuNjE0NTIgMi43NDAyM0M1LjMyMTQxIDIuNzQwMjMgNC4yNDE3IDMuNzI2"
                             const svgEL = linkNode.querySelector("img");
                             if (!svgEL || !svgEL.src.startsWith(str1)) {
                                 return;
@@ -388,10 +388,10 @@
         curDiscountRate.textContent = sameAsflashsellFlag == "true" ? storedCtObject[matchCountry()][1] : storedCtObject[matchCountry()][1] + 1;
         await executeWithRetry("点击同意", async function () {
             let DivEL = document.querySelector("#campaign-detail-basic-info");
-            if (!DivEL)return false;
+            if (!DivEL) return false;
             let tempBtn = DivEL.querySelectorAll(".theme-arco-btn-shape-square")[0];
-            if(tempBtn.classList.contains('theme-arco-btn-loading'))return false;
-            if (tempBtn.innerText.includes("下载失败报告")||tempBtn.innerText.includes("报名中")||tempBtn.innerText.includes("不可参与")){
+            if (tempBtn.classList.contains('theme-arco-btn-loading')) return false;
+            if (tempBtn.innerText.includes("下载失败报告") || tempBtn.innerText.includes("报名中") || tempBtn.innerText.includes("不可参与")) {
                 compaignInfo.add(compaignTitle);
                 localStorage.setItem('compaignInfo' + matchCountry(), JSON.stringify(Array.from(compaignInfo)));
                 window.location.href = "https://seller.tiktokglobalshop.com/promotion/campaign-tools/all?page_index=1&page_size=20";
@@ -453,21 +453,26 @@
             }
             if (tempBtn) {
                 tempBtn.click();
+
+
                 return true; // 假设条件始终为真
             }
             return false;
         });
 
-
-
-
-
         await sleep(1000);
         checkAbort();
         await executeWithRetry("点击下一步", async function () {
             const inputEls = document.querySelectorAll(".theme-arco-input");
-            console.log("inputEls", inputEls.length);
+            const radioGroup = document.querySelectorAll(".theme-arco-radio-group")[0];
+            const containsText = radioGroup.textContent.includes("你的店铺中没有与所选类目或品牌匹配的商品");
 
+            if (containsText) {
+                compaignInfo.add(compaignTitle);
+                localStorage.setItem('compaignInfo' + matchCountry(), JSON.stringify(Array.from(compaignInfo)));
+                window.location.href = "https://seller.tiktokglobalshop.com/promotion/campaign-tools/all?page_index=1&page_size=20";
+
+            }
             if (inputEls.length === 0) {
                 return false;
             }
@@ -598,3 +603,4 @@
         }
         option.checked = true;
     }
+
