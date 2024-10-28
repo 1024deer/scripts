@@ -2,7 +2,7 @@
 
     // 添加Element-UI样式
     GM_addStyle(`
-        @import url('https://cdn.bootcdn.net/ajax/libs/element-ui/2.15.6/theme-chalk/index.css');
+        @import url('https://cdnjs.cloudflare.com/ajax/libs/element-ui/2.15.6/index.js');
     `);
 
     // 添加自定义样式
