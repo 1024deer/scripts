@@ -1,4 +1,4 @@
-  'use strict';
+    'use strict';
 
     // 添加Element-UI样式
     GM_addStyle(`
@@ -17,7 +17,7 @@
             position: fixed;
             top: 180px;
             right: 0;
-            width: 450px;
+            width: 650px;
             height: 100%;
             background: white;
             box-shadow: -2px 0 5px rgba(0,0,0,0.5);
@@ -35,13 +35,13 @@
             height: 200px;
         }
     `);
-
+    
     let output=[]
     let progress = 0
     const countryOrder = ["MY", "PH", "SG", "TH", "VN"];
 
-
-
+    
+    
 
 
     // 创建Vue应用挂载点
@@ -95,13 +95,13 @@
                   })
                   .then(data => {
                       resolve(data); // 解决 Promise，并返回数据
-
+              
                   })
                   .catch(error => {
                       reject(error); // 捕获异常并拒绝 Promise
                   });
                 });
-
+                 
               },
               fetchData(id) {
                 return new Promise((resolve, reject) => {
@@ -132,18 +132,18 @@
                   })
                   .then(data => {
                       resolve(data); // 解决 Promise，并返回数据
-
+              
                   })
                   .catch(error => {
                       reject(error); // 捕获异常并拒绝 Promise
                   });
                 });
-
+                 
               } ,
               runAsyncOperations(list_frag) {
                   const promises = [];
                   for (let i = 0; i < list_frag.length; i++) {
-
+              
                       promises.push(this.fetchData(list_frag[i].value)
                           .then(data => {
                             list_frag[i].total =data.data.total
@@ -155,7 +155,7 @@
                             this.percentage = Math.ceil(progress/ list_frag.length*100);
                               return list_frag;
                           })
-
+              
                       )
                   }
                   return Promise.all(promises);
@@ -172,7 +172,7 @@
                     this.runAsyncOperations(list).then((data)=>{
                           console.log(output);
                           const groupedItems = {};
-
+                  
                           // Iterate through the data and group by the common prefix
                           output.forEach(item => {
                               const prefix = item.label.split("-")[0];
@@ -181,7 +181,7 @@
                               }
                               groupedItems[prefix].push(item);
                           });
-
+                          
                           // Convert the grouped items back to an array
                           const result = Object.values(groupedItems);
                           let ouputStr=""
@@ -200,8 +200,8 @@
                         console.log(ouputStr);
                         this.output = ouputStr;
                     })
-
-
+                  
+                  
                   })
             },
         },
@@ -214,7 +214,12 @@
                             <el-icon-loading></el-icon-loading>
                         </div>
                         <div v-else style="height: 200px; overflow: auto; border: 1px solid #ccc; margin-bottom: 20px;">
-                            {{ output }}
+                                <el-input
+                                type="textarea"
+                                :rows="10"
+                                v-model="output"
+                                readonly
+                                ></el-input>   
                         </div>
                         <el-progress :percentage="percentage"></el-progress>
                         <div slot="footer" class="dialog-footer">
