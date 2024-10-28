@@ -2,7 +2,7 @@
 
     // 添加Element-UI样式
     GM_addStyle(`
-        @import url('https://unpkg.com/element-ui/lib/theme-chalk/index.css');
+        @import url('https://cdn.bootcdn.net/ajax/libs/element-ui/2.15.6/theme-chalk/index.css');
     `);
 
     // 添加自定义样式
