@@ -7,7 +7,7 @@
     let abortFlag = false;
     let savedDateobj = null;
     let autoCompeignFlag = localStorage.getItem('autoCompeignFlag') || "false";
-    let sameAsflashsellFlag = localStorage.getItem('sameAsflashsellFlag') || "false";
+    let discountIncrement = Number(localStorage.getItem('discountIncrement') || 0);
     let countryInfoObject = localStorage.getItem('countryInfoObject')
     if (countryInfoObject == null) {
         abortFlag = true;
@@ -63,12 +63,7 @@
         </div>
         <form style="display: flex; flex-direction: column;">
             <label style="margin-bottom: 10px; color: #444;">
-                <input type="radio" name="option" value="option1" style="margin-right: 10px;" class="option-radio">
-                与秒杀一致
-            </label>
-            <label style="margin-bottom: 10px; color: #444;">
-                <input type="radio" name="option" value="option2" style="margin-right: 10px;"  class="option-radio">
-                秒杀+1
+                比秒杀多<input type="number" name="option" style="margin-right: 10px;" class="discountIncrement" >
             </label>
             <input type="date" id="date-picker" name="date-picker">
         </form>
@@ -154,8 +149,6 @@
         localStorage.setItem('autoCompeignFlag', "true");
         waitDomLoading();
     });
-    handleOptionChange();
-
 
     document.getElementById('endBtn').addEventListener('click', function () {
         console.log('结束按钮被点击');
@@ -170,7 +163,14 @@
         localStorage.removeItem('compaignInfoVN');
     });
 
-    selectOption();
+    document.querySelector('.discountIncrement').addEventListener('input', function(event) {
+        // 在这里编写你想要执行的代码
+        console.log('Input value changed to: ' + event.target.value);
+        discountIncrement = Number(event.target.value);
+        localStorage.setItem("discountIncrement", event.target.value);
+    });
+
+    initInputValue();
     function changeReactInputValue(inputDom, newText) {
         let lastValue = inputDom.value;
         inputDom.value = newText;
@@ -385,7 +385,7 @@
             }
         }
         const curDiscountRate = document.getElementById('discountRate');
-        curDiscountRate.textContent = sameAsflashsellFlag == "true" ? storedCtObject[matchCountry()][1] : storedCtObject[matchCountry()][1] + 1;
+        curDiscountRate.textContent = storedCtObject[matchCountry()][1] + discountIncrement;
         await executeWithRetry("点击同意", async function () {
             let DivEL = document.querySelector("#campaign-detail-basic-info");
             if (!DivEL) return false;
@@ -479,9 +479,7 @@
             const discountRateInput = inputEls[0];
             const curCountry = matchCountry();
             let discountRate = Number.parseInt(storedCtObject[curCountry][1]);
-            if (sameAsflashsellFlag == "false") {
-                discountRate += 1;
-            }
+            discountRate+=discountIncrement;
             changeReactInputValue(discountRateInput, discountRate);
             if (inputEls.length == 2) {
                 const stockInput = inputEls[1];
@@ -578,29 +576,9 @@
         localStorage.setItem("countryInfoObject", JSON.stringify(storedCtObject));
         // updatecountryCheckbox();
     }
-    function handleOptionChange() {
-        const options = document.querySelectorAll('.option-radio');
-
-        options.forEach(option => {
-            option.addEventListener('change', function () {
-                if (this.checked) {
-                    console.log('选中的选项是: ' + this.value);
-                    // 这里可以添加其他您想要执行的操作
-                    if (this.value == "option1") {
-                        sameAsflashsellFlag = "true";
-                    } else {
-                        sameAsflashsellFlag = "false";
-                    }
-                    localStorage.setItem('sameAsflashsellFlag', sameAsflashsellFlag);
-                }
-            });
-        });
+    function initInputValue() {
+        let discountIncrementEl = document.querySelector('.discountIncrement');
+        console.log(discountIncrement);
+        console.log(typeof discountIncrement);
+        discountIncrementEl.value = Number(discountIncrement);
     }
-    function selectOption() {
-        let option = document.querySelector('.option-radio[value="option1"]');;
-        if (sameAsflashsellFlag) {
-            option = document.querySelector('.option-radio[value="option2"]');
-        }
-        option.checked = true;
-    }
-
