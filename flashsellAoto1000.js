@@ -419,7 +419,13 @@
             checkAbort();
             // // 点击秒杀
             await executeWithRetry("点击秒杀", async function () {
-                let tempBtn = document.querySelector('.theme-arco-tabs-pane').childNodes[1].childNodes[1].childNodes[1].childNodes[1].childNodes[0]
+                let tempEL = document.querySelector('.theme-arco-tabs-pane');
+                let tempBtn = null;
+                if (tempEL.children.length == 2) {
+                    tempBtn = document.querySelector('.theme-arco-tabs-pane').childNodes[1].childNodes[1].childNodes[1].childNodes[1].childNodes[0];
+                }else {
+                    tempBtn = document.querySelector('.theme-arco-tabs-pane').childNodes[2].childNodes[1].childNodes[1].childNodes[1].childNodes[0];
+                }
                 if (tempBtn) {
                     tempBtn.click();
                     return true; // 假设条件始终为真
@@ -822,4 +828,3 @@
             alert("全部执行完毕")
         }
     }
-
