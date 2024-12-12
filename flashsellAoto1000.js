@@ -326,6 +326,9 @@
 
                 // }
                 currentCell = beginTimePickerElement.querySelector(".theme-arco-picker-cell-selected");
+                if(currentCell.innerHTML!= startDay){
+                    currentCell =currentCell.previousElementSibling;
+                }
                 let count = 14;
                 while (count > 0) {
                     let innerDiv = currentCell.childNodes[0].childNodes[0];
