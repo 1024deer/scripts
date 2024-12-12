@@ -1,4 +1,4 @@
-    'use strict';
+   'use strict';
     // Your code here...
     let storedCtObject = null;
     let cur_country_code = '';
@@ -326,7 +326,7 @@
 
                 // }
                 currentCell = beginTimePickerElement.querySelector(".theme-arco-picker-cell-selected");
-                if(currentCell.innerHTML!= startDay){
+                if(index==0 && currentCell.innerHTML!= startDay){
                     currentCell =currentCell.previousElementSibling;
                 }
                 let count = 14;
