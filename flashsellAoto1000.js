@@ -1,4 +1,4 @@
-   'use strict';
+    'use strict';
     // Your code here...
     let storedCtObject = null;
     let cur_country_code = '';
@@ -42,6 +42,8 @@
             }
             if (index == 1) {
                 time.setDate(time.getDate() + 3);
+                console.log("设置时间为：" + time.getDate());
+                
             }
             return {
                 day: time.getDate(),
@@ -326,13 +328,11 @@
 
                 // }
                 currentCell = beginTimePickerElement.querySelector(".theme-arco-picker-cell-selected");
-                if(index==0 && currentCell.innerHTML!= startDay){
-                    currentCell =currentCell.previousElementSibling;
-                }
                 let count = 14;
                 while (count > 0) {
                     let innerDiv = currentCell.childNodes[0].childNodes[0];
-                    if (innerDiv.innerHTML == startDay) {
+                    console.log(innerDiv.innerText);
+                    if (innerDiv.innerText == startDay) {
                         innerDiv.click();
                         break;
                     }
@@ -418,22 +418,11 @@
                 }
                 return false;
             });
-            await sleep(1500);
+            await sleep(2500);
             checkAbort();
             // // 点击秒杀
             await executeWithRetry("点击秒杀", async function () {
-                const divs = document.querySelectorAll('div');
-                let tempBtn = null;
-                let div = null;
-                // 遍历 div 元素，寻找内容为“秒杀”的第一个
-                for (let i = 0; i < divs.length; i++) {
-                    if (divs[i].textContent.trim() === '秒杀') {
-                        console.log('找到的 div:', divs[i]);
-                        div = divs[i];
-                        break; // 找到第一个后退出循环
-                    }
-                }
-                tempBtn = div.parentNode.nextSibling.children[0];
+                let tempBtn = document.querySelector('.theme-arco-tabs-pane').childNodes[1].childNodes[1].childNodes[1].childNodes[1].childNodes[0]
                 if (tempBtn) {
                     tempBtn.click();
                     return true; // 假设条件始终为真
@@ -836,3 +825,5 @@
             alert("全部执行完毕")
         }
     }
+
+
