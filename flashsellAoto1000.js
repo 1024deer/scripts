@@ -473,7 +473,7 @@
                     let count = 14;
                     while (count > 0) {
                         let innerDiv = currentCell.childNodes[0].childNodes[0];
-                        if (innerDiv.innerHTML == startDay) {
+                        if (innerDiv.innerText == startDay) {
                             innerDiv.click();
                             break;
                         }
