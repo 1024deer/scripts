@@ -422,7 +422,18 @@
             checkAbort();
             // // 点击秒杀
             await executeWithRetry("点击秒杀", async function () {
-                let tempBtn = document.querySelector('.theme-arco-tabs-pane').childNodes[1].childNodes[1].childNodes[1].childNodes[1].childNodes[0]
+                const divs = document.querySelectorAll('div');
+                let tempBtn = null;
+                let div = null;
+                // 遍历 div 元素，寻找内容为“秒杀”的第一个
+                for (let i = 0; i < divs.length; i++) {
+                    if (divs[i].textContent.trim() === '秒杀') {
+                        console.log('找到的 div:', divs[i]);
+                        div = divs[i];
+                        break; // 找到第一个后退出循环
+                    }
+                }
+                tempBtn = div.parentNode.nextSibling.children[0];
                 if (tempBtn) {
                     tempBtn.click();
                     return true; // 假设条件始终为真
@@ -825,5 +836,3 @@
             alert("全部执行完毕")
         }
     }
-
-
