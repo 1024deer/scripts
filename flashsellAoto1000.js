@@ -322,28 +322,27 @@
                 inputElement.click();
                 let beginTimePickerElement = document.querySelector('.theme-arco-picker-container');
                 let currentCell = null
-                // if(index==0){
-                //     currentCell = beginTimePickerElement.querySelector(".theme-arco-picker-cell-today");
-                // }else{
-
-                // }
                 currentCell = beginTimePickerElement.querySelector(".theme-arco-picker-cell-selected");
                 let count = 14;
-                while (count > 0) {
+                while (count > 0) {console.log(currentCell);
+                
                     let innerDiv = currentCell.childNodes[0].childNodes[0];
-                    console.log(innerDiv.innerText);
                     if (innerDiv.innerText == startDay) {
                         innerDiv.click();
                         break;
+                    }else if(Number.parseInt(innerDiv.innerText)>Number.parseInt(startDay)){
+                        currentCell=currentCell.previousElementSibling;
+                        currentCell.click();
+                    }else {
+                        let tempel = currentCell.nextSibling;
+                        if (!tempel) {
+                            currentCell = currentCell.parentNode.nextSibling.childNodes[0];
+    
+                        } else {
+                            currentCell = currentCell.nextSibling;
+                        }
+                        count--;
                     }
-                    let tempel = currentCell.nextSibling;
-                    if (!tempel) {
-                        currentCell = currentCell.parentNode.nextSibling.childNodes[0];
-
-                    } else {
-                        currentCell = currentCell.nextSibling;
-                    }
-                    count--;
                 }
                 let hourPickerBtn = beginTimePickerElement.querySelector(".theme-arco-picker-btn-select-time");
                 let beginTimeconfirmBtn = hourPickerBtn.nextSibling;
@@ -464,27 +463,27 @@
                     inputElement.click();
                     let beginTimePickerElement = document.querySelector('.theme-arco-picker-container');
                     let currentCell = null
-                    // if(index==0){
-                    //     currentCell = beginTimePickerElement.querySelector(".theme-arco-picker-cell-today");
-                    // }else{
-
-                    // }
                     currentCell = beginTimePickerElement.querySelector(".theme-arco-picker-cell-selected");
                     let count = 14;
-                    while (count > 0) {
+                    while (count > 0) {console.log(currentCell);
+                
                         let innerDiv = currentCell.childNodes[0].childNodes[0];
                         if (innerDiv.innerText == startDay) {
                             innerDiv.click();
                             break;
+                        }else if(Number.parseInt(innerDiv.innerText)>Number.parseInt(startDay)){
+                            currentCell=currentCell.previousElementSibling;
+                            currentCell.click();
+                        }else {
+                            let tempel = currentCell.nextSibling;
+                            if (!tempel) {
+                                currentCell = currentCell.parentNode.nextSibling.childNodes[0];
+        
+                            } else {
+                                currentCell = currentCell.nextSibling;
+                            }
+                            count--;
                         }
-                        let tempel = currentCell.nextSibling;
-                        if (!tempel) {
-                            currentCell = currentCell.parentNode.nextSibling.childNodes[0];
-
-                        } else {
-                            currentCell = currentCell.nextSibling;
-                        }
-                        count--;
                     }
                     let hourPickerBtn = beginTimePickerElement.querySelector(".theme-arco-picker-btn-select-time");
                     let beginTimeconfirmBtn = hourPickerBtn.nextSibling;
@@ -836,3 +835,4 @@
             alert("全部执行完毕")
         }
     }
+
