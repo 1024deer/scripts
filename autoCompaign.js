@@ -102,7 +102,7 @@
             ">清空</button>
         </div>
     </div>
-`;
+    `;
     document.body.appendChild(floatingWindow);
     const datePicker = document.getElementById('date-picker');
 
@@ -163,7 +163,7 @@
         localStorage.removeItem('compaignInfoVN');
     });
 
-    document.querySelector('.discountIncrement').addEventListener('input', function(event) {
+    document.querySelector('.discountIncrement').addEventListener('input', function (event) {
         // 在这里编写你想要执行的代码
         console.log('Input value changed to: ' + event.target.value);
         discountIncrement = Number(event.target.value);
@@ -404,13 +404,40 @@
             return false;
         });
         await sleep(2000);
-        checkAbort();
-        let tempBtn = Array.from(document.getElementsByTagName('button')).find(button =>
-            button.textContent.trim() === '同意'
-        );
-        if (tempBtn) {
-            tempBtn.click();
+        // await executeWithRetry("点击同意", async function () {
+
+        //     return false;
+        // });
+
+        for (let i = 0; i < 2; i++) {
+            await sleep(2000);
+            checkAbort();
+            const DivEL = document.querySelector(".overflow-scroll");
+            if (DivEL) {
+                try {
+                    DivEL.scrollTo({
+                        top: DivEL.scrollHeight,
+                        behavior: 'smooth' // 添加平滑滚动
+                    });
+                } catch (error) {
+                    console.error("滚动发生错误:", error); // 捕获并打印错误信息
+                    // 继续执行其他代码
+                }
+                await sleep(2000);
+                checkAbort();
+                console.log("点击同意");
+                let tempBtn = Array.from(document.getElementsByTagName('button')).find(button =>
+                    button.textContent.trim() === '同意'
+                );
+                if (tempBtn) {
+                    tempBtn.click();
+                }
+                await sleep(2000);
+            }
+
         }
+
+
         await sleep(2000);
         checkAbort();
         await executeWithRetry("点击radio图片", async function () {
@@ -479,7 +506,7 @@
             const discountRateInput = inputEls[0];
             const curCountry = matchCountry();
             let discountRate = Number.parseInt(storedCtObject[curCountry][1]);
-            discountRate+=discountIncrement;
+            discountRate += discountIncrement;
             changeReactInputValue(discountRateInput, discountRate);
             if (inputEls.length == 2) {
                 const stockInput = inputEls[1];
