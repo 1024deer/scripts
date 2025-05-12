@@ -8,6 +8,9 @@
 // @match        https://affiliate.tiktokglobalshop.com/**
 // @match        https://seller.tiktokshopglobalselling.com/**
 // @match        https://affiliate.tiktokshopglobalselling.com/**
+// @updateURL    https://raw.githubusercontent.com/1024deer/scripts/main/shop_info.user.js
+// @downloadURL  https://raw.githubusercontent.com/1024deer/scripts/main/shop_info.user.js
+// @require  https://raw.githubusercontent.com/1024deer/scripts/main/shop_info.user.js
 // @grant        GM_xmlhttpRequest
 // @grant        unsafeWindow
 // @connect      117.72.98.112
