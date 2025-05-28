@@ -1,14 +1,13 @@
 // ==UserScript==
-// @name         复制大人信息
+// @name         复制达人信息
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  在网页右侧添加可拖动的悬浮窗，点击显示表格数据
 // @author       You
 // @match        https://affiliate.tiktokglobalshop.com/connection/creator/detail*
 // @grant        GM_addStyle
 // @updateURL    https://raw.githubusercontent.com/1024deer/scripts/main/influencer_info.meta.js
 // @downloadURL  https://raw.githubusercontent.com/1024deer/scripts/main/influencer_info.user.js
-// @require  https://raw.githubusercontent.com/1024deer/scripts/main/influencer_info.user.js
 // ==/UserScript==
 
 
@@ -229,7 +228,7 @@
     const creatorId = document.querySelector("#creator-detail-profile-container").children[0].children[1].children[0].children[0].children[0].children[0].innerText;
 
     // 获取达人类目（需数据处理）
-    const creatorCategory = document.querySelector("#creator-detail-profile-container").children[0].children[1].children[1].children[0].children[0].children[1].innerText.split('\n')[0];
+    const creatorCategory = document.querySelector("#creator-detail-profile-container").children[0].children[1].children[1].children[0].children[1].children[1].innerText.split('\n')[0];
 
     // 获取达人粉丝量
     const followerCount1 = document.querySelector("#creator-detail-profile-container").children[0].children[1].children[1].children[0].children[1].children[1].innerText;
@@ -269,7 +268,7 @@
     const averageVideoViews1 = dataCards[10]?.children[0].children[0].innerText || 'N/A'; // 平均视频播放量
     const averageVideoViews = parseNumber(averageVideoViews1); // 解析后缀K/M
     const videoInteractionRate = dataCards[11]?.children[0].children[0].innerText || 'N/A'; // 视频互动率
-   
+
     // 表头行（制表符分隔）
     const headers = [
       "创作者ID",
@@ -328,7 +327,7 @@
       <pp>已经复制到粘贴板</p>`;
     modalOverlay.style.display = 'block';
     modal.style.display = 'block';
-    
+
     copyToClipboard(str1);
   });
 
