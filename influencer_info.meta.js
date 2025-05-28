@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         复制达人信息
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.3
 // @description  在网页右侧添加可拖动的悬浮窗，点击显示表格数据
 // @author       You
 // @match        https://affiliate.tiktokglobalshop.com/connection/creator/detail*
