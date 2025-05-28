@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         复制达人信息
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.3
 // @description  在网页右侧添加可拖动的悬浮窗，点击显示表格数据
 // @author       You
 // @match        https://affiliate.tiktokglobalshop.com/connection/creator/detail*
@@ -231,7 +231,7 @@
     const creatorCategory = document.querySelector("#creator-detail-profile-container").children[0].children[1].children[1].children[0].children[1].children[1].innerText.split('\n')[0];
 
     // 获取达人粉丝量
-    const followerCount1 = document.querySelector("#creator-detail-profile-container").children[0].children[1].children[1].children[0].children[1].children[1].innerText;
+    const followerCount1 = document.querySelector("#creator-detail-profile-container").children[0].children[1].children[1].children[0].children[2].children[1].innerText;
     const followerCount = parseNumber(followerCount1); // 解析后缀K/M
     // 获取交易数据卡片
     const dataCards = document.querySelectorAll(".creator_video_data_card_trigger_is_display");
