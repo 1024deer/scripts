@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         TK 达人建联DM助手
 // @namespace    http://tampermonkey.net/
-// @version      0.3
+// @version      0.4
 // @description  TK 达人建联DM助手，话术存储，辅助回复，达人打标签
 // @match        https://affiliate.tiktokglobalshop.com/seller/im**
 // @match        https://affiliate.tiktokshopglobalselling.com/seller/im**
