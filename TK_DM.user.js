@@ -8,6 +8,7 @@
 // @updateURL    https://raw.githubusercontent.com/1024deer/scripts/main/TK_DM.meta.js
 // @downloadURL  https://raw.githubusercontent.com/1024deer/scripts/main/TK_DM.user.js
 // @grant        GM_xmlhttpRequest
+// @connect      117.72.98.112
 // @grant        GM_addStyle
 // @grant        GM_getResourceText
 // ==/UserScript==
