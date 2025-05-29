@@ -14,7 +14,6 @@
 
 (function () {
     'use strict';
-
     // 主应用状态
     const state = {
         showMainPanel: true,
@@ -33,15 +32,17 @@
         settings: {
             autoTranslate: false,
             themeColor: '#409EFF',
-            username: "" //填自己名字
+            username: "", //填自己名字
+            showMainPanelDefault: true,
         }
 
     };
-
+    let usernameChanged = false;
     // 从 localStorage 中获取设置
     const storedSettings = localStorage.getItem('tk-settings');
     if (storedSettings) {
         state.settings = JSON.parse(storedSettings);
+        state.showMainPanel = state.settings.showMainPanelDefault;
     }
     const server_url = "https://117.72.98.112";
     // 话术数据结构示例
@@ -851,7 +852,7 @@
 
         const aiTextarea = document.createElement('textarea');
         aiTextarea.className = 'ai-textarea';
-        aiTextarea.placeholder = '输入您想咨询的内容...';
+        aiTextarea.placeholder = 'Developing...';
         aiTextarea.value = state.aiPrompt;
         aiTextarea.addEventListener('input', (e) => {
             state.aiPrompt = e.target.value;
@@ -899,13 +900,14 @@
 
         const usernameLabel = document.createElement('label');
         usernameLabel.className = 'el-form-item__label';
-        usernameLabel.textContent = '用户名';   
+        usernameLabel.textContent = '用户名';
 
         const usernameInput = document.createElement('input');
         usernameInput.className = 'el-input__inner';
         usernameInput.value = state.settings.username;
         usernameInput.addEventListener('input', (e) => {
             state.settings.username = e.target.value;
+            usernameChanged = true;
         });
         usernameItem.appendChild(usernameLabel);
         usernameItem.appendChild(usernameInput);
@@ -934,6 +936,32 @@
         autoTranslateItem.appendChild(autoTranslateLabel);
         autoTranslateItem.appendChild(autoTranslateSwitch);
         form.appendChild(autoTranslateItem);
+
+        //默认开启设置
+        const showMainPanelDefaultItem = document.createElement('div');
+        showMainPanelDefaultItem.className = 'el-form-item';
+        const showMainPanelDefaultLabel = document.createElement('label');
+        showMainPanelDefaultLabel.className = 'el-form-item__label';
+        showMainPanelDefaultLabel.textContent = '默认开启侧边栏';
+
+        const showMainPanelDefaultSwitch = document.createElement('span');
+        showMainPanelDefaultSwitch.className = `el-switch ${state.settings.showMainPanelDefault ? 'is-checked' : ''}`;
+
+        const switchCore2 = document.createElement('span');
+        switchCore2.className = 'el-switch__core';
+
+        showMainPanelDefaultSwitch.appendChild(switchCore2);
+        showMainPanelDefaultSwitch.addEventListener('click', () => {
+            state.settings.showMainPanelDefault = !state.settings.showMainPanelDefault;
+            showMainPanelDefaultSwitch.className = `el-switch ${state.settings.showMainPanelDefault ? 'is-checked' : ''}`;
+        });
+
+        showMainPanelDefaultItem.appendChild(showMainPanelDefaultLabel);
+        showMainPanelDefaultItem.appendChild(showMainPanelDefaultSwitch);
+        form.appendChild(showMainPanelDefaultItem);
+
+
+
 
         // 主题颜色设置
         const themeColorItem = document.createElement('div');
@@ -1232,6 +1260,17 @@
         alert('设置已保存');
         // 保存设置到本地存储
         localStorage.setItem('tk-settings', JSON.stringify(state.settings));
+        if (usernameChanged) {
+            // 发送请求更新话术列表
+            api.getPhrases().then(() => {
+                debugLog('话术列表已更新');
+            }).catch(error => {
+                debugLog(`更新话术列表失败: ${error.message}`);
+            });
+            usernameChanged = false;
+            // 重新渲染界面
+            render();
+        }
     }
 
     // 调试日志
@@ -1266,7 +1305,7 @@
 
         // 重新创建面板
         createMainPanel();
-       // createDebugPanel();
+        // createDebugPanel();
 
         // 更新浮动按钮显示
         const floatButton = document.getElementById('tk-float-button');
