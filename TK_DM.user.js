@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         TK 达人建联DM助手
 // @namespace    http://tampermonkey.net/
-// @version      0.4
+// @version      0.5
 // @description  TK 达人建联DM助手，话术存储，辅助回复，达人打标签
 // @match        https://affiliate.tiktokglobalshop.com/seller/im**
 // @match        https://affiliate.tiktokshopglobalselling.com/seller/im**
@@ -150,7 +150,7 @@
         getPopularPhrases() {
             return [...state.phrases]
                 .sort((a, b) => b.frequency - a.frequency)
-                .slice(0, 3);
+                .slice(0, 8);
         },
 
         // 获取所有类别
