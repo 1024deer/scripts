@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         复制达人信息
 // @namespace    http://tampermonkey.net/
-// @version      1.5
+// @version      1.6
 // @description  在网页右侧添加可拖动的悬浮窗，点击显示表格数据、数据块信息和Top视频信息（已移除销售名称和星级功能，整合为统一JSON格式，支持未公开数据处理，货币转换为美元，新增直播数据提取，支持范围格式货币数据）
 // @author       You
 // @match        https://affiliate.tiktokglobalshop.com/connection/creator/detail*
@@ -2093,7 +2093,7 @@
         `;
 
         // 复制AI prompt到剪贴板
-        await this.copyToClipboard(aiPrompt);
+        // await this.copyToClipboard(aiPrompt);
         this.modalContent.innerHTML = `
           ${scoreHtml}
           <div id="ai-analysis-result" style="margin:24px 0 0 0;padding:18px 12px;background:#f8f9fd;border-radius:10px;min-height:48px;color:#223355;font-size:15px;"></div>
