@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         复制达人信息
 // @namespace    http://tampermonkey.net/
-// @version      1.3
+// @version      1.4
 // @description  在网页右侧添加可拖动的悬浮窗，点击显示表格数据、数据块信息和Top视频信息（已移除销售名称和星级功能，整合为统一JSON格式，支持未公开数据处理，货币转换为美元，新增直播数据提取，支持范围格式货币数据）
 // @author       You
 // @match        https://affiliate.tiktokglobalshop.com/connection/creator/detail*
@@ -1570,71 +1570,61 @@
       try {
         const creatorInfo = this.extractCreatorInfo();
         const transactionData = this.extractTransactionData();
-
+        
+        // 数据行（制表符分隔）
+        const creatorId = creatorInfo.creatorId;
+        const star = 4; // 默认 4
         const currentDate = new Date().toISOString().split('T')[0];
-
-        // 定义数据标题
-        const dataTitles = [
-          '创作者ID',
-          '添加时间',
-          '创作者类别',
-          '国家',
-          '粉丝数',
-          '总交易额',
-          '成交件数',
-          '千次曝光GPM',
-          '预估发布率',
-          '单客GPM',
-          '预估发布率',
-          '平均佣金率',
-          '商品数',
-          '品牌合作数',
-          '视频GPM',
-          '视频数',
-          '平均视频观看量',
-          '视频互动率',
-          '直播GPM',
-          '直播数',
-          '平均直播播放量',
-          '直播平均互动率'
-        ];
-
-        const dataValues = [
-          creatorInfo.creatorId,
+        const creatorCategory = creatorInfo.creatorCategory;
+        const currentCountry = this.currentCountry;
+        const sales_name = ''; // 这行空白
+        const followerCount = creatorInfo.followerCount;
+        const totalTransactionAmount = typeof transactionData.totalTransactionAmount === 'number' ? transactionData.totalTransactionAmount : 0;
+        const completedTransactions = transactionData.completedTransactions;
+        const gpmPerThousandImpressions = typeof transactionData.gpmPerThousandImpressions === 'number' ? transactionData.gpmPerThousandImpressions : 0;
+        const gpmPerCustomer = typeof transactionData.gpmPerCustomer === 'number' ? transactionData.gpmPerCustomer : 0;
+        const estimatedPublishRate = transactionData.estimatedPublishRate;
+        const averageCommissionRate = transactionData.averageCommissionRate;
+        const productCount = transactionData.productCount;
+        const brandCollaborations = transactionData.brandCollaborations;
+        const videoGPM = typeof transactionData.videoGPM === 'number' ? transactionData.videoGPM : 0;
+        const videoCount = transactionData.videoCount;
+        const averageVideoViews = transactionData.averageVideoViews;
+        const videoInteractionRate = transactionData.videoInteractionRate;
+        
+        // 数据行（示例数据，制表符分隔）
+        const excelRow = [
+          creatorId,
+          star, // 默认 4
           currentDate,
-          creatorInfo.creatorCategory,
-          this.currentCountry,
+          creatorCategory,
+          currentCountry,
+          sales_name, // 这行空白
           "\\",
           "\\",
-          creatorInfo.followerCount,
-          typeof transactionData.totalTransactionAmount === 'number' ? transactionData.totalTransactionAmount.toFixed(0) + '$' : transactionData.totalTransactionAmount,
-          transactionData.completedTransactions,
-          typeof transactionData.gpmPerThousandImpressions === 'number' ? transactionData.gpmPerThousandImpressions.toFixed(0) + '$' : transactionData.gpmPerThousandImpressions,
+          followerCount,
+          totalTransactionAmount.toFixed(0),
+          completedTransactions,
+          gpmPerThousandImpressions.toFixed(0),
           "\\",
-          typeof transactionData.gpmPerCustomer === 'number' ? transactionData.gpmPerCustomer.toFixed(0) + '$' : transactionData.gpmPerCustomer,
-          transactionData.estimatedPublishRate,
-          transactionData.averageCommissionRate,
-          transactionData.productCount,
-          transactionData.brandCollaborations,
-          typeof transactionData.videoGPM === 'number' ? transactionData.videoGPM.toFixed(0) + '$' : transactionData.videoGPM,
-          transactionData.videoCount,
-          transactionData.averageVideoViews,
-          transactionData.videoInteractionRate,
-          typeof transactionData.liveStreamGPM === 'number' ? transactionData.liveStreamGPM.toFixed(0) + '$' : transactionData.liveStreamGPM,
-          transactionData.liveStreamCount,
-          transactionData.averageLiveStreamViews,
-          transactionData.liveStreamInteractionRate
-        ];
-
-        // 组合标题和数据
-        const combinedData = dataTitles.map((title, index) => `${title}: ${dataValues[index]}`).join("\t");
-
-        return combinedData;
+          gpmPerCustomer.toFixed(0),
+          estimatedPublishRate,
+          averageCommissionRate,
+          productCount,
+          brandCollaborations,
+          videoGPM.toFixed(0),
+          videoCount,
+          averageVideoViews,
+          videoInteractionRate
+        ].join("\t");
+        
+        return `${excelRow}`;
       } catch (error) {
         console.error('生成表格数据失败:', error);
         return '数据提取失败，请检查页面结构';
       }
     }
+
 
     /**
      * 生成完整的JSON数据
@@ -1993,8 +1983,31 @@
      * 绑定事件
      */
     bindEvents() {
-      // 悬浮按钮点击事件
-      this.floatBtn.addEventListener('click', () => this.showModal());
+      // 悬浮按钮点击事件 - 直接复制数据到剪贴板，不显示模态框
+      this.floatBtn.addEventListener('click', async () => {
+        const dataExtractor = new DataExtractor();
+        const str1 = dataExtractor.generateTableData();
+        await this.copyToClipboard(str1);
+        
+        // 显示一个临时提示（可选）
+        const toast = document.createElement('div');
+        toast.style.position = 'fixed';
+        toast.style.bottom = '20px';
+        toast.style.left = '50%';
+        toast.style.transform = 'translateX(-50%)';
+        toast.style.background = 'rgba(0,0,0,0.7)';
+        toast.style.color = 'white';
+        toast.style.padding = '10px 20px';
+        toast.style.borderRadius = '4px';
+        toast.style.zIndex = '10000';
+        toast.textContent = '已复制到剪贴板';
+        document.body.appendChild(toast);
+        
+        // 2秒后移除提示
+        setTimeout(() => {
+          document.body.removeChild(toast);
+        }, 2000);
+      });
 
       // 关闭模态框事件
       this.closeBtn.addEventListener('click', () => this.hideModal());
