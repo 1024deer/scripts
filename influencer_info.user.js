@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         复制达人信息
 // @namespace    http://tampermonkey.net/
-// @version      1.4
+// @version      1.5
 // @description  在网页右侧添加可拖动的悬浮窗，点击显示表格数据、数据块信息和Top视频信息（已移除销售名称和星级功能，整合为统一JSON格式，支持未公开数据处理，货币转换为美元，新增直播数据提取，支持范围格式货币数据）
 // @author       You
 // @match        https://affiliate.tiktokglobalshop.com/connection/creator/detail*
@@ -1983,13 +1983,13 @@
      * 绑定事件
      */
     bindEvents() {
-      // 悬浮按钮点击事件 - 直接复制数据到剪贴板，不显示模态框
+      // 悬浮按钮点击事件 - 复制数据到剪贴板并显示模态框
       this.floatBtn.addEventListener('click', async () => {
         const dataExtractor = new DataExtractor();
         const str1 = dataExtractor.generateTableData();
         await this.copyToClipboard(str1);
         
-        // 显示一个临时提示（可选）
+        // 显示一个临时提示
         const toast = document.createElement('div');
         toast.style.position = 'fixed';
         toast.style.bottom = '20px';
@@ -2007,6 +2007,9 @@
         setTimeout(() => {
           document.body.removeChild(toast);
         }, 2000);
+        
+        // 同时显示模态框
+        this.showModal();
       });
 
       // 关闭模态框事件
